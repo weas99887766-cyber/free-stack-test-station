@@ -1,0 +1,8 @@
+{
+  "ts": "2026-11-10T20:07:38.539607+00:00",
+  "platform": "Linux-7.0.0-44-generic-x86_64-with-glibc2.39",
+  "gpu": [],
+  "status": "cpu_only",
+  "matmul_ms": null,
+  "error": "No module named 'torch'"
+}
