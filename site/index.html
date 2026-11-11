@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="zh">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>空链路测试站</title>
+<style>body{font-family:system-ui;max-width:720px;margin:40px auto;padding:0 16px}li{margin:6px 0}.ok{color:#0a7d2c}.wait{color:#999}</style></head>
+<body>
+<h1>空链路测试站</h1>
+<p>用途：逐项验证免费平台是否真跑通。状态以后端 /health 返回为准。</p>
+<ul id="list"><li class="wait">正在读取后端状态…</li></ul>
+<script>
+const API = new URLSearchParams(location.search).get('api') || '';
+async function main(){
+  const ul = document.getElementById('list');
+  if(!API){ ul.innerHTML = '<li class="wait">未配置后端地址</li>'; return; }
+  try{
+    const r = await fetch(API.replace(/\/$/,'') + '/health');
+    const j = await r.json();
+    ul.innerHTML = Object.entries(j.checks||{}).map(([k,v]) =>
+      `<li class="${v==='ok'?'ok':'wait'}">${k}: ${v}</li>`).join('');
+  }catch(e){ ul.innerHTML = '<li>后端不可达: ' + e.message + '</li>'; }
+}
+main();
+</script>
+</body></html>
