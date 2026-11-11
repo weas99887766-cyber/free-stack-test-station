@@ -1,4 +1,5 @@
 import json
+import os
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from datetime import datetime, timezone
 
@@ -20,4 +21,5 @@ class H(BaseHTTPRequestHandler):
 
 
 if __name__ == "__main__":
-    HTTPServer(("0.0.0.0", 8080), H).serve_forever()
+    port = int(os.environ.get("PORT", "3000"))
+    HTTPServer(("0.0.0.0", port), H).serve_forever()
