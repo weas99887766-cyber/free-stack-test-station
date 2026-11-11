@@ -1,0 +1,23 @@
+name: daily-healthcheck
+on:
+  schedule:
+    - cron: '23 0 * * *'
+  workflow_dispatch:
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Probe configured endpoints
+        env:
+          WORKER_HEALTH_URL: ${{ vars.WORKER_HEALTH_URL }}
+          CLOADY_HEALTH_URL: ${{ vars.CLOADY_HEALTH_URL }}
+          SITE_URL: ${{ vars.SITE_URL }}
+        run: |
+          fail=0
+          for u in "$WORKER_HEALTH_URL" "$CLOADY_HEALTH_URL" "$SITE_URL"; do
+            if [ -z "$u" ]; then echo "skip unset endpoint"; continue; fi
+            code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 "$u") || code=000
+            echo "$u -> $code"
+            [ "$code" = "200" ] || fail=1
+          done
+          exit $fail
